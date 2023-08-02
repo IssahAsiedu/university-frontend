@@ -1,10 +1,4 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500&display=swap');
-
-
-* {
-    font-family: 'Jost' !important;
-}
 
 h1:focus {
     outline: none;

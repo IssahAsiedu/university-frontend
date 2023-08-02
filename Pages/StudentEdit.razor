@@ -59,13 +59,13 @@
 
                         <button
                             type="button"
-                           onclick="@(() => FetchCourses(--currentIndex))"
+                           onclick="@(() => {--currentIndex; FetchCourses();})"
                                 class="btn btn-primary @prevDisabled">
                             Previous
                         </button>
 
                         <button type="button"
-                            onclick="@(() => FetchCourses(++currentIndex))"
+                            onclick="@(() => {++currentIndex; FetchCourses();})"
                                 class="btn btn-primary @nextDisabled" style="margin-left: 5px;">
                             Next
                         </button>
@@ -96,7 +96,7 @@
 
 
 @code {
-    int numberOfItems = 2;
+    int numberOfItems = 10;
 
     private int currentIndex = 1;
 
@@ -158,15 +158,13 @@
         student.Enrollments.Add(enrollment);
     }
 
-    public async void FetchCourses(int index)
+    public async void FetchCourses()
     {
         fetchingCourses = true;
 
-        Console.WriteLine($"index: {index}");
-
         var filter = new PaginationFilter()
             {
-                CurrentIndex = index,
+                CurrentIndex = currentIndex,
                 PageSize = numberOfItems
             };
         CoursesPagination = (CoursePaginationData)
