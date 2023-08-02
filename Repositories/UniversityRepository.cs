@@ -66,7 +66,6 @@ public class StudentsRepository: IWebRepository
         return mapper.Map<Student>(studentResponse);
     }
 
-
     public async Task DeleteStudent(string id)
     {
         await httpClient.DeleteAsync($"students/{id}");
@@ -95,7 +94,6 @@ public class CoursesRepository : IWebRepository
             url += $"?pageSize={filter.PageSize}&currentIndex={filter.CurrentIndex}";
         }
 
-        Console.WriteLine(url);
         var response = await httpClient.GetAsync(url);
         var content = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<CoursePaginationData>(content, options)!;

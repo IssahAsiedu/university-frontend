@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "2tLQT+LpP6U1F59tU8o2gHY/Ze8RtPiv4T4+ML1C9Os=",
+  "Hash": "f4k3yA8RpyplV+izi905kBPZ27+1ufgmkC8aIMaVxlg=",
   "Source": "UniversityWeb",
   "BasePath": "/",
   "Mode": "Root",
@@ -136,6 +136,23 @@
       "OriginalItemSpec": "C:\\Users\\IssahAsiedu\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\7.0.9\\runtimes\\browser-wasm\\native\\dotnet.wasm"
     },
     {
+      "Identity": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\bin\\Debug\\net7.0\\wwwroot\\_framework\\icudt.dat",
+      "SourceId": "UniversityWeb",
+      "SourceType": "Computed",
+      "ContentRoot": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\bin\\Debug\\net7.0\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "_framework/icudt.dat",
+      "AssetKind": "Build",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "BlazorWebAssemblyResource",
+      "AssetTraitValue": "native",
+      "CopyToOutputDirectory": "PreserveNewest",
+      "CopyToPublishDirectory": "Never",
+      "OriginalItemSpec": "C:\\Users\\IssahAsiedu\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\7.0.9\\runtimes\\browser-wasm\\native\\icudt.dat"
+    },
+    {
       "Identity": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\bin\\Debug\\net7.0\\wwwroot\\_framework\\icudt_CJK.dat",
       "SourceId": "UniversityWeb",
       "SourceType": "Computed",
@@ -185,23 +202,6 @@
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\IssahAsiedu\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\7.0.9\\runtimes\\browser-wasm\\native\\icudt_no_CJK.dat"
-    },
-    {
-      "Identity": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\bin\\Debug\\net7.0\\wwwroot\\_framework\\icudt.dat",
-      "SourceId": "UniversityWeb",
-      "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\bin\\Debug\\net7.0\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "_framework/icudt.dat",
-      "AssetKind": "Build",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "BlazorWebAssemblyResource",
-      "AssetTraitValue": "native",
-      "CopyToOutputDirectory": "PreserveNewest",
-      "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\IssahAsiedu\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\7.0.9\\runtimes\\browser-wasm\\native\\icudt.dat"
     },
     {
       "Identity": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\bin\\Debug\\net7.0\\wwwroot\\_framework\\Microsoft.AspNetCore.Authorization.dll",
@@ -7089,23 +7089,6 @@
       "OriginalItemSpec": "wwwroot\\css\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\wwwroot\\css\\open-iconic\\FONT-LICENSE",
-      "SourceId": "UniversityWeb",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "css/open-iconic/FONT-LICENSE",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\css\\open-iconic\\FONT-LICENSE"
-    },
-    {
       "Identity": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\wwwroot\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css",
       "SourceId": "UniversityWeb",
       "SourceType": "Discovered",
@@ -7206,6 +7189,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.woff"
+    },
+    {
+      "Identity": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\wwwroot\\css\\open-iconic\\FONT-LICENSE",
+      "SourceId": "UniversityWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "css/open-iconic/FONT-LICENSE",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\open-iconic\\FONT-LICENSE"
     },
     {
       "Identity": "C:\\Users\\IssahAsiedu\\Desktop\\project\\UniversityWeb\\wwwroot\\css\\open-iconic\\ICON-LICENSE",
