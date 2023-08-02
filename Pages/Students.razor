@@ -1,0 +1,134 @@
+﻿@page "/students"
+@inject IJSRuntime JsRuntime
+@using UniversityWeb.Repositories;
+
+<PageTitle>Students</PageTitle>
+
+@if (Data == null || loading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>
+        <a href="/students/register">Create New</a>
+    </p>
+     <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">LastName</th>
+                <th scope="col">FirstName</th>
+                <th scope="col">EnrollmentDate</th>
+                <th scope="col">Update</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Data.Students)
+            {
+                <tr>
+                    <td class="align-middle">
+                        @student.LastName
+                    </td>
+                    <td class="align-middle">
+                        @student.FirstName
+                    </td>
+                    <td class="align-middle">
+                        @student.EnrollmentDate
+                    </td>
+                    <td class="align-middle">
+                        <a class="btn btn-info" href="student/@student.ID">Update</a>
+                    </td>
+                    <td class="align-middle">
+                        <button type="button" class="btn btn-danger" onclick="@(() => SackStudent(student.ID))">Delete</button>
+                    </td>
+                </tr>
+             }
+            </tbody>
+    </table>
+
+    <div>
+        @{
+        var prevDisabled = PrevDisabled() ? "disabled" : "";
+        var nextDisabled = NextDisabled() ? "disabled" : "";
+        }
+        <button type="button"
+                onclick="@(() => { --currentIndex; FetchStudents();})"
+                class="btn btn-primary @prevDisabled">
+            Previous
+        </button>
+
+        <button type="button"
+                onclick="@(() => {++currentIndex; FetchStudents();})"
+                class="btn btn-primary @nextDisabled" style="margin-left: 5px;">
+            Next
+        </button>
+        
+    </div>
+}
+
+@code 
+{
+    private bool loading = false;
+
+    int numberOfItems = 10;
+
+    private int currentIndex = 1;
+
+    private StudentPaginationData? Data { get; set; }
+
+    public bool PrevDisabled()
+    {
+        return currentIndex - 1 <= 0;
+    }
+
+    public bool NextDisabled()
+    {
+        double pagesAvailable = (double)Data!.Count / numberOfItems;
+        int pages = (int)Math.Ceiling(pagesAvailable);
+        return currentIndex + 1 > pages;
+    }
+
+    public async void FetchStudents()
+    {
+        loading = true;
+        var filter = new PaginationFilter()
+            {
+                CurrentIndex = currentIndex,
+                PageSize = numberOfItems
+            };
+        Data = (StudentPaginationData)
+        await StudentsRepo.GetPaginatedData(filter);
+        loading = false;
+        StateHasChanged();
+    }
+
+
+    [Inject]
+    public required StudentsRepository StudentsRepo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        var filter = new PaginationFilter()
+            {
+                CurrentIndex = currentIndex,
+                PageSize = numberOfItems
+            };
+        Data = (StudentPaginationData)(await StudentsRepo.GetPaginatedData(filter));
+        loading = false;
+    }
+
+    private async Task SackStudent(string id)
+    {
+        try
+        {
+            await StudentsRepo.DeleteStudent(id);
+            FetchStudents();
+            await JsRuntime.InvokeVoidAsync("alert", "Deleted!");
+        } catch(Exception)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "An error occured!");
+        }
+    }
+}

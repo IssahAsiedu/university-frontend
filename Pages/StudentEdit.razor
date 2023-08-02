@@ -1,0 +1,195 @@
+﻿@page "/student/{Id}"
+@using AutoMapper;
+@using UniversityShared.Models;
+@using UniversityWeb.Repositories;
+
+<h3>StudentEdit</h3>
+
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@student" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label class="control-label" for="firstName">First Name:</label>
+                <InputText @bind-Value="student.FirstName" id="firstName" class="form-control" placeholder="Doe" />
+                <ValidationMessage For="() => student.FirstName" class="text-danger" />
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label class="control-label" for="lastName">Last Name:</label>
+                <InputText @bind-Value="student.LastName" id="lastName" class="form-control" placeholder="John" />
+                <ValidationMessage For="() => student.LastName" class="text-danger" />
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label class="control-label" for="date">Enrollment Date</label>
+                <InputDate @bind-Value="student.EnrollmentDate" id="date" class="form-control" />
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <h6>Courses</h6>
+                <div class="d-flex flex-wrap justify-content-around">
+                           
+                    @if (CoursesPagination != null && !fetchingCourses)
+                    {
+                        foreach (var course in CoursesPagination.Courses)
+                        {
+                            var enrolled = student.Enrollments.Any((e) => e.CourseID.Equals(Guid.Parse(course.ID)));
+
+                            <p>
+                                <input 
+                                    @key="@course.ID"
+                                    type="checkbox" 
+                                    name="selectedCourses" 
+                                    @onchange="eventArgs => RegisterForCourse(course.ID)"
+                                    checked=@enrolled/>
+                                @course.Title
+                            </p>
+                        }   
+                    }               
+
+               </div>
+
+               <div>
+                    @if(CoursesPagination != null && !fetchingCourses)
+                    {
+                        var prevDisabled = PrevDisabled() ? "disabled" : "";
+                        var nextDisabled = NextDisabled() ? "disabled" : "";
+
+                        <button
+                            type="button"
+                           onclick="@(() => FetchCourses(--currentIndex))"
+                                class="btn btn-primary @prevDisabled">
+                            Previous
+                        </button>
+
+                        <button type="button"
+                            onclick="@(() => FetchCourses(++currentIndex))"
+                                class="btn btn-primary @nextDisabled" style="margin-left: 5px;">
+                            Next
+                        </button>
+                    }
+                    
+                    @if(fetchingCourses)
+                    {
+                        <span>Fetching Courses</span>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+
+           <div class="form-group" style="margin-top: 20px;">
+                @if (saving)
+                {
+                    <span>Saving Details....</span>
+                }
+            </div>
+            
+
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+    int numberOfItems = 2;
+
+    private int currentIndex = 1;
+
+    private bool fetchingCourses = true;
+
+    private bool saving = false;
+
+    [Parameter]
+    public required string Id { get; set; }
+
+    public Student student = new Student();
+
+    public CoursePaginationData? CoursesPagination { get; set; }
+
+    [Inject]
+    public required CoursesRepository CoursesRepo { get; set; }
+
+    [Inject]
+    public required StudentsRepository StudentsRepo { get; set; }
+
+    [Inject]
+    public required IMapper Mapper { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var filter = new PaginationFilter()
+            {
+                CurrentIndex = currentIndex,
+                PageSize =  numberOfItems
+            };
+        CoursesPagination = (CoursePaginationData) await CoursesRepo.GetPaginatedData(filter);
+        student = await StudentsRepo.GetStudent(Id);
+        fetchingCourses = false;
+    }
+
+    public bool PrevDisabled()
+    {
+        return currentIndex - 1 <= 0;
+    }
+
+    public bool NextDisabled()
+    {
+        double pagesAvailable = (double) CoursesPagination!.Count / numberOfItems;
+        int pages = (int)Math.Ceiling(pagesAvailable);
+        return currentIndex + 1 > pages;
+    }
+
+    public void RegisterForCourse(string courseId)
+    {
+        var enrolled = student.Enrollments.Any((e) => e.CourseID.Equals(Guid.Parse(courseId)));
+
+        if(enrolled)
+        {
+            student.Enrollments.RemoveAll((e) => e.CourseID.Equals(Guid.Parse(courseId)));
+            return;
+        }
+
+        var enrollment = new Enrollment() { CourseID = Guid.Parse(courseId) };
+        student.Enrollments.Add(enrollment);
+    }
+
+    public async void FetchCourses(int index)
+    {
+        fetchingCourses = true;
+
+        Console.WriteLine($"index: {index}");
+
+        var filter = new PaginationFilter()
+            {
+                CurrentIndex = index,
+                PageSize = numberOfItems
+            };
+        CoursesPagination = (CoursePaginationData)
+        await CoursesRepo.GetPaginatedData(filter);
+        fetchingCourses = false;
+        StateHasChanged();
+    }
+
+    public async Task HandleValidSubmit()
+    {
+        if(saving || student.ID.Equals(Guid.Empty))
+        {
+            return;
+        }
+
+        saving = true;
+        var updateData = Mapper.Map<StudentUpdateData>(student);
+
+        await StudentsRepo.UpdateStudent(Id, updateData);
+        student = await StudentsRepo.GetStudent(Id);
+
+        saving = false;
+        StateHasChanged();
+
+    }
+}
