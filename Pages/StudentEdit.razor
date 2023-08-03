@@ -2,6 +2,7 @@
 @using AutoMapper;
 @using UniversityShared.Models;
 @using UniversityWeb.Repositories;
+@inject IJSRuntime JsRuntime
 
 <h3>@student.FirstName @student.LastName</h3>
 
@@ -185,6 +186,7 @@
 
         await StudentsRepo.UpdateStudent(Id, updateData);
         student = await StudentsRepo.GetStudent(Id);
+        await JsRuntime.InvokeVoidAsync("alert", "Saved");
 
         saving = false;
         StateHasChanged();

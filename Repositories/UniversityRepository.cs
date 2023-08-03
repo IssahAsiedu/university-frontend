@@ -66,6 +66,15 @@ public class StudentsRepository: IWebRepository
         return mapper.Map<Student>(studentResponse);
     }
 
+    public async Task<StudentResponseData> GetStudentData(string id)
+    {
+        var response = await httpClient.GetAsync($"students/{id}");
+        var content = await response.Content.ReadAsStringAsync();
+
+        var studentResponse = JsonSerializer.Deserialize<StudentResponseData>(content, options)!;
+        return studentResponse;
+    }
+
     public async Task DeleteStudent(string id)
     {
         await httpClient.DeleteAsync($"students/{id}");

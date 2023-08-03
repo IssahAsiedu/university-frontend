@@ -20,6 +20,7 @@ else
                 <th scope="col">FirstName</th>
                 <th scope="col">EnrollmentDate</th>
                 <th scope="col">Update</th>
+                <th scope="col">Detail</th>
                 <th scope="col">Delete</th>
             </tr>
         </thead>
@@ -38,6 +39,9 @@ else
                     </td>
                     <td class="align-middle">
                         <a class="btn btn-info" href="student/@student.ID">Update</a>
+                    </td>
+                    <td class="align-middle">
+                        <a class="btn btn-info" href="students/@student.ID">Details</a>
                     </td>
                     <td class="align-middle">
                         <button type="button" class="btn btn-danger" onclick="@(() => SackStudent(student.ID))">Delete</button>
@@ -119,7 +123,7 @@ else
         loading = false;
     }
 
-    private async Task SackStudent(string id)
+    private async Task SackStudent(string id) 
     {
         try
         {
