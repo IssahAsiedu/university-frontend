@@ -115,4 +115,9 @@ public class CoursesRepository : IWebRepository
         var content = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<CoursePaginationData>(content, options)!;
     }
+
+    public async Task DeleteCourse(string id)
+    {
+        await httpClient.DeleteAsync($"students/{id}");
+    }
 }

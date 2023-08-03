@@ -1,18 +1,142 @@
 ﻿@page "/courses"
+@inject IJSRuntime JsRuntime
+@using UniversityWeb.Repositories;
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Courses</PageTitle>
 
-<h1>Counter</h1>
+@if (Data == null || loading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>
+        <a href="">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Number</th>
+                <th scope="col">Title</th>
+                <th scope="col">Credits</th>
+                <th scope="col">Department</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in Data.Courses)
+            {
+                <tr>
+                    <td></td>
+                    <td class="align-middle">
+                        @course.Title
+                    </td>
+                    <td class="align-middle">
+                        @course.Credits
+                    </td>
+                    <td class="align-middle">
+                    </td>
+                    <td class="align-middle">
+                        <a class="btn btn-info" href="">Update</a>
+                    </td>
+                    <td class="align-middle">
+                        <a class="btn btn-info" href="">Details</a>
+                    </td>
+                    <td class="align-middle">
+                        <button type="button" class="btn btn-danger" onclick="">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<p role="status">Current count: @currentCount</p>
+    <div>
+        @{
+            var prevDisabled = PrevDisabled() ? "disabled" : "";
+            var nextDisabled = NextDisabled() ? "disabled" : "";
+        }
+        <button type="button"
+                onclick="@(() => { --currentIndex; FetchCourses();})"
+                class="btn btn-primary @prevDisabled">
+            Previous
+        </button>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+        <button type="button"
+                onclick="@(() => {++currentIndex; FetchCourses();})"
+                class="btn btn-primary @nextDisabled" style="margin-left: 5px;">
+            Next
+        </button>
+
+    </div>
+}
+
 
 @code {
-    private int currentCount = 0;
 
-    private void IncrementCount()
+    private bool loading = false;
+
+    int numberOfItems = 10;
+
+    private int currentIndex = 1;
+
+    private CoursePaginationData? Data { get; set; }
+
+    public bool PrevDisabled()
     {
-        currentCount++;
+        return currentIndex - 1 <= 0;
     }
+
+    public bool NextDisabled()
+    {
+        double pagesAvailable = (double)Data!.Count / numberOfItems;
+        int pages = (int)Math.Ceiling(pagesAvailable);
+        return currentIndex + 1 > pages;
+    }
+
+    public async void FetchCourses()
+    {
+        loading = true;
+        var filter = new PaginationFilter()
+            {
+                CurrentIndex = currentIndex,
+                PageSize = numberOfItems
+            };
+        Data = (CoursePaginationData)
+        await CoursesRepo.GetPaginatedData(filter);
+        loading = false;
+        StateHasChanged();
+    }
+
+
+    [Inject]
+    public required CoursesRepository CoursesRepo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        var filter = new PaginationFilter()
+            {
+                CurrentIndex = currentIndex,
+                PageSize = numberOfItems
+            };
+        Data = (CoursePaginationData)(await CoursesRepo.GetPaginatedData(filter));
+        loading = false;
+    }
+
+    private async Task SackStudent(string id)
+    {
+        try
+        {
+            await CoursesRepo.DeleteCourse(id);
+            FetchCourses();
+            await JsRuntime.InvokeVoidAsync("alert", "Deleted!");
+        }
+        catch (Exception)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "An error occured!");
+        }
+    }
+   
 }
