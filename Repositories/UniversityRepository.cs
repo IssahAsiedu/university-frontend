@@ -48,6 +48,14 @@ public class StudentsRepository: IWebRepository
         var jsonContent = new StringContent(content, Encoding.UTF8, "application/json");
         await httpClient.PostAsync("students", jsonContent);
     }
+    
+    public async Task GradeStudent(StudentGradingData data)
+    {
+        var content = JsonSerializer.Serialize(data, options);
+        var jsonContent = new StringContent(content, Encoding.UTF8, "application/json");
+        Console.WriteLine(await jsonContent.ReadAsStringAsync()) ;
+        await httpClient.PostAsync("students/grade", jsonContent);
+    }
 
     public async Task UpdateStudent(string id, StudentUpdateData data)
     {

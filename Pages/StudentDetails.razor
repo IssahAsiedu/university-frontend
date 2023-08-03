@@ -51,7 +51,17 @@
                             <td>
                                 @foreach(var grade in Enum.GetValues(typeof(Grade)))
                                 {
-                                    <span><input type="checkbox" /> @grade </span>
+                                    var isGrade = item.Grade == grade.ToString();
+
+                                    <span>
+                                        <input 
+                                            type="radio"
+                                            name="grade"
+                                            checked=@isGrade 
+                                            @onchange="async (e) => { await GradeStudent(Guid.Parse(item.Course.ID), (Grade) grade);}"
+                                        />
+                                        @grade
+                                    </span>
                                 }
                             </td>
                         </tr>
@@ -59,6 +69,10 @@
                 </table>
             </dd>
         </dl>
+
+        @if(saving) {
+            <span>Saving......</span>
+        }
     </div>
 }
 
@@ -72,10 +86,22 @@
     [Parameter]
     public required string Id { get; set; }
 
+    private bool saving = false;
+
     private StudentResponseData? studentData = null;
 
     [Inject]
     public required StudentsRepository StudentsRepo { get; set; }
+
+    public async Task GradeStudent(Guid courseId, Grade grade)
+    {
+        saving = true;
+        var student = new StudentGradingData(StudentID: Guid.Parse(studentData!.ID), CourseID: courseId, Grade: grade.ToString());
+        await StudentsRepo.GradeStudent(student);
+        studentData = await StudentsRepo.GetStudentData(Id);
+        saving = false;
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {
