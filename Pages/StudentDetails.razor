@@ -56,7 +56,7 @@
                                     <span>
                                         <input 
                                             type="radio"
-                                            name="grade"
+                                            name="@(item.ID)"
                                             checked=@isGrade 
                                             @onchange="async (e) => { await GradeStudent(Guid.Parse(item.Course.ID), (Grade) grade);}"
                                         />
