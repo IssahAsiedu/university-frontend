@@ -20,8 +20,20 @@ build_property._RazorSourceGeneratorDebug =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/IssahAsiedu/Desktop/project/UniversityWeb/Pages/CourseCreate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlQ3JlYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/IssahAsiedu/Desktop/project/UniversityWeb/Pages/CourseEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/IssahAsiedu/Desktop/project/UniversityWeb/Pages/Courses.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/IssahAsiedu/Desktop/project/UniversityWeb/Pages/CourseUpdate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlVXBkYXRlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/IssahAsiedu/Desktop/project/UniversityWeb/Pages/Index.razor]

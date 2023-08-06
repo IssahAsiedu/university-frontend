@@ -11,7 +11,7 @@
 else
 {
     <p>
-        <a href="">Create New</a>
+        <a href="/courses/create">Create New</a>
     </p>
     <table class="table">
         <thead>
@@ -29,7 +29,7 @@ else
             @foreach (var course in Data.Courses)
             {
                 <tr>
-                    <td></td>
+                    <td>@course.CourseNumber</td>
                     <td class="align-middle">
                         @course.Title
                     </td>
@@ -37,6 +37,7 @@ else
                         @course.Credits
                     </td>
                     <td class="align-middle">
+                        @course.Department.Name
                     </td>
                     <td class="align-middle">
                         <a class="btn btn-info" href="">Update</a>
@@ -45,7 +46,7 @@ else
                         <a class="btn btn-info" href="">Details</a>
                     </td>
                     <td class="align-middle">
-                        <button type="button" class="btn btn-danger" onclick="">Delete</button>
+                        <button type="button" class="btn btn-danger" onclick="@(() => DeleteCourse(course.ID))">Delete</button>
                     </td>
                 </tr>
             }
@@ -109,7 +110,6 @@ else
         StateHasChanged();
     }
 
-
     [Inject]
     public required CoursesRepository CoursesRepo { get; set; }
 
@@ -125,7 +125,7 @@ else
         loading = false;
     }
 
-    private async Task SackStudent(string id)
+    private async Task DeleteCourse(string id)
     {
         try
         {
@@ -138,5 +138,5 @@ else
             await JsRuntime.InvokeVoidAsync("alert", "An error occured!");
         }
     }
-   
+
 }

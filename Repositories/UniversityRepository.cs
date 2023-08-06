@@ -116,6 +116,20 @@ public class CoursesRepository : IWebRepository
         return JsonSerializer.Deserialize<CoursePaginationData>(content, options)!;
     }
 
+    public async Task<List<DepartmentResponseData>> GetDepartments()
+    {
+        var response = await httpClient.GetAsync("departments");
+        var content = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<List<DepartmentResponseData>>(content, options)!;
+    }
+
+    public async Task CreateCourse(CourseCreationData data)
+    {
+        var content = JsonSerializer.Serialize(data, options);
+        var jsonContent = new StringContent(content, Encoding.UTF8, "application/json");
+        await httpClient.PostAsync("courses", jsonContent);
+    }
+
     public async Task DeleteCourse(string id)
     {
         await httpClient.DeleteAsync($"students/{id}");

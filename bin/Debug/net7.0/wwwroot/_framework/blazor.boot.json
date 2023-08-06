@@ -200,15 +200,15 @@
       "mscorlib.dll": "sha256-t1RT9mknsQ54H+sVa1vtMhjv3D8ZjiAGoLzHvuIObPw=",
       "netstandard.dll": "sha256-5SHKPh1PcuJjq4lIo7ymdIyhb9d3++oMAjr46auhUSc=",
       "System.Private.CoreLib.dll": "sha256-eH+XIsCUG5oZ0k8AIzNtRLTCLiV\/8Zv0RFCPMsIkdYY=",
-      "UniversityShared.dll": "sha256-TBBpzDqzqgDtns6qULchnkybfKbOOpywwfXhqco5bC8=",
-      "UniversityWeb.dll": "sha256-ABEkHV9Uqohc07rUvLxi15L\/sjFMEzMVqXJpxIoGVuU="
+      "UniversityShared.dll": "sha256-8ChRFDZIFpGAuKKobAYd8XQ53fewGpKY3o7ayrq9cko=",
+      "UniversityWeb.dll": "sha256-FLi7AXJtUeWX\/qFlV0VDhNmNPJWlwdyyGASxlAly6+Y="
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
-      "UniversityShared.pdb": "sha256-8p6AIrCPGl5dnc2qwlj9yRh5CD47xcuwTyJzIWPPW1s=",
-      "UniversityWeb.pdb": "sha256-3+Ax4bB5Yda0x6r\/AZJbxo8G8EBYU\/alX2uu1gkgYlE="
+      "UniversityShared.pdb": "sha256-uu0WxZrolu0hZaGv20Lw04GnWyyICr6GJudlEn77dAE=",
+      "UniversityWeb.pdb": "sha256-IFTlWbyt2pAKecDGilmjtLKGYhM8YTbrXo\/LOQERRm8="
     },
     "runtime": {
       "dotnet.7.0.9.gyqq9zlg6p.js": "sha256-dUIY5Mz0ozZWqtTfBb7ArJKbdh5IIp8BXeq6UjK4u\/c=",
