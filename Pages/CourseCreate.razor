@@ -90,7 +90,7 @@
         await CoursesRepo.CreateCourse(courseCreationData);
 
         await JsRuntime.InvokeVoidAsync("alert", "Saved");
-
+        course = new Course();
         saving = false;
         StateHasChanged();
     }

@@ -1,0 +1,59 @@
+﻿@page "/courses/{Id}"
+@using UniversityWeb.Repositories;
+
+<h2>Details</h2>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Course ID
+        </dt>
+        <dd class="col-sm-10">
+            @course?.ID
+        </dd>
+        <dt class="col-sm-2">
+            Title
+        </dt>
+        <dd class="col-sm-10">
+            @course?.Title
+        </dd>
+        <dt class="col-sm-2">
+            Credits
+        </dt>
+        <dd class="col-sm-10">
+            @course?.Credits
+        </dd>
+        <dt class="col-sm-2">
+            Department
+        </dt>
+        <dd class="col-sm-10">
+            @course?.Department.Name
+        </dd>
+        <dt class="col-sm-2">
+            Number
+        </dt>
+        <dd class="col-sm-10">
+            @course?.CourseNumber
+        </dd>
+    </dl>
+</div>
+<div>
+    <a href="/course/@course?.ID">Edit</a> |
+    <a href="/courses">Back to List</a>
+</div>
+
+@code {
+    [Parameter]
+    public required string Id { get; set; }
+
+    private CourseResponseData? course = null;
+
+    [Inject]
+    public required CoursesRepository CoursesRepo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        course = await CoursesRepo.GetCourse(Id);
+    }
+}

@@ -1,5 +1,106 @@
-﻿<h3>CourseEdit</h3>
+﻿@page "/course/{Id}"
+@using AutoMapper;
+@using UniversityShared.Models;
+@using UniversityWeb.Repositories;
+@inject IJSRuntime JsRuntime
+
+
+<h4>Course @course?.Title</h4>
+
+<hr />
+
+@if(course != null)
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="course" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+
+
+                <div class="form-group" style="margin-top: 24px;">
+                    <label for="course-title" class="control-label">Title</label>
+                    <InputText @bind-Value="course.Title" class="form-control" id="course-title" />
+                    <ValidationMessage For="() => course.Title" />
+                </div>
+
+                <div class="form-group" style="margin-top: 24px;">
+                    <label for="course-number" class="control-label">Number</label>
+                    <InputText @bind-Value="course.CourseNumber" class="form-control" />
+                    <ValidationMessage For="() => course.CourseNumber" />
+                </div>
+
+                <div class="form-group" style="margin-top: 24px;">
+                    <label for="course-credits" class="control-label">Credits</label>
+                    <input @bind="course.Credits" class="form-control" />
+                    <ValidationMessage For="() => course.Credits" />
+                </div>
+
+                <div class="form-group" style="margin-top: 24px;">
+                    <label asp-for="Course.Department" class="control-label" style="display:block; margin-bottom: 5px;">Department</label>
+
+                    <InputSelect @bind-Value="course.DepartmentID">
+                        <option value="">-- Select Department --</option>
+                        @foreach (var department in departments)
+                        {
+                            <option value="@Guid.Parse(department.DepartmentID)">@department.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => course.DepartmentID" />
+                </div>
+                <div class="form-group" style="margin-top: 10px;">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </EditForm>
+        </div>
+        <div class="form-group" style="margin-top: 20px;">
+            @if (saving)
+            {
+                <span>Saving Details....</span>
+            }
+        </div>
+    </div>
+}
+
 
 @code {
+
+    private bool saving;
+
+    [Parameter]
+    public required string Id { get; set; }
+
+    [Inject]
+    public required IMapper Mapper { get; set; }
+
+    [Inject]
+    public required CoursesRepository CoursesRepo { get; set; }
+
+    private Course? course = null;
+
+    private List<DepartmentResponseData> departments = new List<DepartmentResponseData>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var courseData = await CoursesRepo.GetCourse(Id);
+        course = Mapper.Map<Course>(courseData);
+
+        departments = await CoursesRepo.GetDepartments();
+    }
+
+
+    private async void HandleValidSubmit()
+    {
+        var courseDto = Mapper.Map<CourseUpdateDto>(course);
+
+        saving = true;
+
+        await CoursesRepo.UpdateCourse(Id, courseDto);
+        var courseData = await CoursesRepo.GetCourse(Id);
+        course = Mapper.Map<Course>(courseData);
+        await JsRuntime.InvokeVoidAsync("alert", "Saved");
+
+        saving = false;
+        StateHasChanged();
+    }
 
 }
