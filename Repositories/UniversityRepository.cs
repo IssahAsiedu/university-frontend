@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using System;
 using System.Text;
 using System.Text.Json;
 using UniversityDto;
@@ -149,5 +148,34 @@ public class CoursesRepository : IWebRepository
     public async Task DeleteCourse(string id)
     {
         await httpClient.DeleteAsync($"courses/{id}");
+    }
+}
+
+
+public class InstructorsRepository : IWebRepository
+{
+    private readonly HttpClient httpClient;
+
+    private readonly JsonSerializerOptions options;
+
+
+    public InstructorsRepository(HttpClient client)
+    {
+        httpClient = client;
+        options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+    }
+
+    public async Task<PaginationResponseData> GetPaginatedData(PaginationFilter? filter)
+    {
+        var url = "instructors";
+
+        if (filter != null)
+        {
+            url += $"?pageSize={filter.PageSize}&currentIndex={filter.CurrentIndex}";
+        }
+
+        var response = await httpClient.GetAsync(url);
+        var content = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<InstructorPaginationData>(content, options)!;
     }
 }

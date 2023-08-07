@@ -1,4 +1,5 @@
 ﻿@page "/instructors"
+@using UniversityWeb.Repositories;
 
 
 <h2>Instructors</h2>
@@ -24,7 +25,7 @@
             @foreach (var instructor in Data.Instructors)
             {
                 string selectedRow = "";
-                if (instructor.ID == Id)
+                if (instructor == InstructorData)
                 {
                     selectedRow = "table-success";
                 }
@@ -36,7 +37,7 @@
                         @instructor.FirstName
                     </td>
                     <td>
-                        instructor.HireDate)
+                        @instructor.HireDate
                     </td>
                     <td>
                         @if (instructor.OfficeAssignment != null)
@@ -48,12 +49,12 @@
                         @{
                             foreach (var course in instructor.Courses)
                             {
-                                @course.ID @:  @course.Title <br />
+                                @course.Title <br />
                             }
                         }
                     </td>
                     <td>
-                        <button class="btn btn-info" onclick="@(() => Id = instructor.ID)">Select</button> |
+                        <button class="btn btn-info" @onclick="(() => SetInstructor(instructor))">Select</button> |
                         <a href="" class="btn btn-info">Edit</a> |
                         <a href="" class="btn btn-info">Details</a> |
                         <a href="">Delete</a>
@@ -63,10 +64,11 @@
         </tbody>
     </table>
 
-    @if (InstructorData?.Courses != null)
+    @if (InstructorData != null)
     {
-        <h3>Courses Taught by Selected Instructor</h3>
+        <h4>Courses Taught by Selected Instructor</h4>
         <table class="table">
+
             <tr>
                 <th></th>
                 <th>Number</th>
@@ -74,7 +76,8 @@
                 <th>Department</th>
             </tr>
 
-            @foreach (var item in InstructorData.Courses)
+           
+           @foreach (var item in InstructorData.Courses)
             {
                 string selectedRow = "";
                 if (item.ID == CourseID)
@@ -83,10 +86,10 @@
                 }
                 <tr class="@selectedRow">
                     <td>
-                        <a class="btn btn-info" onclick="@(() => CourseID = item.ID)">Select</a>
+                        <a class="btn btn-info" @onclick="(() => CourseID = item.ID)">Select</a>
                     </td>
                     <td>
-                        @item.ID
+                        @item.CourseNumber
                     </td>
                     <td>
                         @item.Title
@@ -102,9 +105,9 @@
 
     @if (GetCourse() != null)
     {
-        <h3>
+        <h5>
             Students Enrolled in Selected Course
-        </h3>
+        </h5>
         <table class="table">
             <tr>
                 <th>Name</th>
@@ -123,6 +126,7 @@
             }
         </table>
     }
+  
 
 } else
 {
@@ -132,8 +136,6 @@
 
 @code
 {
-    public string Id { get; set; } = string.Empty;
-
     public string CourseID = string.Empty;
 
     public InstructorDto? InstructorData = null;
@@ -144,6 +146,15 @@
 
     private int currentIndex = 1;
 
+    [Inject]
+    public InstructorsRepository? InstructorsRepo { get; set; }
+
+    public void SetInstructor(InstructorDto dto)
+    {
+        InstructorData = dto;
+        CourseID = string.Empty;
+    }
+    
     private InstructorPaginationData? Data { get; set; }
 
     public InstructorCourseResponseData? GetCourse()
@@ -156,9 +167,14 @@
         return InstructorData!.Courses.FirstOrDefault(c => c.ID == CourseID);
     }
 
-    protected override Task OnInitializedAsync()
+    protected async override Task OnInitializedAsync()
     {
-        return base.OnInitializedAsync();
+        var filter = new PaginationFilter()
+            {
+                CurrentIndex = currentIndex,
+                PageSize = numberOfItems
+            };
+        Data = (InstructorPaginationData)(await InstructorsRepo!.GetPaginatedData(filter));
     }
 
 }
