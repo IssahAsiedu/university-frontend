@@ -1,0 +1,164 @@
+﻿@page "/instructors"
+
+
+<h2>Instructors</h2>
+
+<p>
+    <a href="">Create New</a>
+</p>
+
+@if (Data != null && !loading)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Hire Date</th>
+                <th>Office</th>
+                <th>Courses</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var instructor in Data.Instructors)
+            {
+                string selectedRow = "";
+                if (instructor.ID == Id)
+                {
+                    selectedRow = "table-success";
+                }
+                <tr class="@selectedRow">
+                    <td>
+                        @instructor.LastName
+                    </td>
+                    <td>
+                        @instructor.FirstName
+                    </td>
+                    <td>
+                        instructor.HireDate)
+                    </td>
+                    <td>
+                        @if (instructor.OfficeAssignment != null)
+                        {
+                            @instructor.OfficeAssignment.Location
+                        }
+                    </td>
+                    <td>
+                        @{
+                            foreach (var course in instructor.Courses)
+                            {
+                                @course.ID @:  @course.Title <br />
+                            }
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-info" onclick="@(() => Id = instructor.ID)">Select</button> |
+                        <a href="" class="btn btn-info">Edit</a> |
+                        <a href="" class="btn btn-info">Details</a> |
+                        <a href="">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (InstructorData?.Courses != null)
+    {
+        <h3>Courses Taught by Selected Instructor</h3>
+        <table class="table">
+            <tr>
+                <th></th>
+                <th>Number</th>
+                <th>Title</th>
+                <th>Department</th>
+            </tr>
+
+            @foreach (var item in InstructorData.Courses)
+            {
+                string selectedRow = "";
+                if (item.ID == CourseID)
+                {
+                    selectedRow = "table-success";
+                }
+                <tr class="@selectedRow">
+                    <td>
+                        <a class="btn btn-info" onclick="@(() => CourseID = item.ID)">Select</a>
+                    </td>
+                    <td>
+                        @item.ID
+                    </td>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.Department.Name
+                    </td>
+                </tr>
+            }
+
+        </table>
+    }
+
+    @if (GetCourse() != null)
+    {
+        <h3>
+            Students Enrolled in Selected Course
+        </h3>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Grade</th>
+            </tr>
+            @foreach (var item in GetCourse()!.Enrollments)
+            {
+                <tr>
+                    <td>
+                        @item.Student!.FirstName
+                    </td>
+                    <td>
+                        @item.Grade
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+
+} else
+{
+    <span>...Loading</span>
+}
+
+
+@code
+{
+    public string Id { get; set; } = string.Empty;
+
+    public string CourseID = string.Empty;
+
+    public InstructorDto? InstructorData = null;
+
+    private bool loading = false;
+
+    int numberOfItems = 10;
+
+    private int currentIndex = 1;
+
+    private InstructorPaginationData? Data { get; set; }
+
+    public InstructorCourseResponseData? GetCourse()
+    {
+        if(InstructorData == null)
+        {
+            return null;
+        }
+
+        return InstructorData!.Courses.FirstOrDefault(c => c.ID == CourseID);
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+}
