@@ -172,6 +172,11 @@ public class InstructorsRepository : IWebRepository
         if (filter != null)
         {
             url += $"?pageSize={filter.PageSize}&currentIndex={filter.CurrentIndex}";
+            
+            if(!string.IsNullOrEmpty(filter.SearchString))
+            {
+                url += $"&searchString={filter.SearchString}";
+            }
         }
 
         var response = await httpClient.GetAsync(url);
