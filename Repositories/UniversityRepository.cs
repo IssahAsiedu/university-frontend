@@ -178,4 +178,27 @@ public class InstructorsRepository : IWebRepository
         var content = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<InstructorPaginationData>(content, options)!;
     }
+
+    public async Task CreateInstructor(InstructorRegistrationData data)
+    {
+        var content = JsonSerializer.Serialize(data, options);
+        var jsonContent = new StringContent(content, Encoding.UTF8, "application/json");
+        await httpClient.PostAsync("instructors", jsonContent);
+    }
+
+    public async Task<InstructorDto> GetInstructor(string id)
+    {
+        var response = await httpClient.GetAsync($"instructors/{id}");
+        var content = await response.Content.ReadAsStringAsync();
+
+        var instructor = JsonSerializer.Deserialize<InstructorDto>(content, options)!;
+        return instructor;
+    }
+
+    public async Task UpdateInstructor(string id, InstructorUpdateData data)
+    {
+        var content = JsonSerializer.Serialize(data, options);
+        var jsonContent = new StringContent(content, Encoding.UTF8, "application/json");
+        await httpClient.PutAsync($"instructors/{id}", jsonContent);
+    }
 }

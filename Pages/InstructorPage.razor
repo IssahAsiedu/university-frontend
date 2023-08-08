@@ -1,0 +1,234 @@
+﻿@page "/instructors/{Id?}"
+@using AutoMapper;
+@using UniversityShared.Models;
+@using UniversityWeb.Repositories;
+@inject IJSRuntime JsRuntime
+
+
+<h2>
+    @if(Id == null)
+    {
+        @:Register
+    } else
+    {
+        @:Edit
+    }
+</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@instructor" OnValidSubmit="HandleValidSubmit">
+
+        <div class="form-group" style="margin-top: 10px;">
+            <label for="last-name" class="control-label">Last Name</label>
+            <InputText  @bind-Value="instructor.LastName" class="form-control" />
+            <ValidationMessage For="() => instructor.LastName" />
+        </div>
+
+        <div class="form-group" style="margin-top: 20px;">
+            <label for="first-name" class="control-label">First Name</label>
+            <InputText @bind-Value="instructor.FirstName" class="form-control" />
+            <ValidationMessage For="() => instructor.FirstName" />
+        </div>
+
+        <div class="form-group" style="margin-top: 20px;">
+            <label asp-for="Instructor.HireDate" class="control-label">Hire Date</label>
+            <InputDate @bind-Value="instructor.HireDate" class="form-control" />
+            <ValidationMessage For="() => instructor.FirstName" />
+        </div>
+
+        <div class="form-group" style="margin-top: 20px;">
+            <label for="Instructor.OfficeAssignment.Location" class="control-label">Office</label>
+             <InputText @bind-Value="instructor.OfficeAssignment!.Location" class="form-control" />
+            <ValidationMessage For="() => instructor.OfficeAssignment!.Location" />
+        </div>
+
+
+        <div class="form-group" style="margin-top: 20px;">
+            <h6>Courses</h6>
+            <div class="d-flex flex-wrap justify-content-around">
+
+                @if (CoursesPagination != null && !fetchingCourses)
+                {
+                    foreach (var course in CoursesPagination.Courses)
+                    {
+                        var enrolled = instructor.Courses.Any((e) => e.ID.Equals(Guid.Parse(course.ID)));
+
+                        <p>
+                            <input @key="@course.ID"
+                                   type="checkbox"
+                                   name="selectedCourses"
+                            @onchange="eventArgs => AssignCourse(course.ID)"
+                                   checked=@enrolled />
+                            @course.Title
+                        </p>
+                    }
+                }
+
+            </div>
+
+            <div>
+                @if (CoursesPagination != null && !fetchingCourses)
+                {
+                    var prevDisabled = PrevDisabled() ? "disabled" : "";
+                    var nextDisabled = NextDisabled() ? "disabled" : "";
+
+                    <button type="button"
+                            onclick="@(() => {--currentIndex; FetchCourses();})"
+                            class="btn btn-primary @prevDisabled">
+                        Previous
+                    </button>
+
+                    <button type="button"
+                            onclick="@(() => {++currentIndex; FetchCourses();})"
+                            class="btn btn-primary @nextDisabled" style="margin-left: 5px;">
+                        Next
+                    </button>
+                }
+
+                @if (fetchingCourses)
+                {
+                    <span>Fetching Courses</span>
+                }
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 20px;">
+            <input type="submit" value="@( Id == null ? "Create" : "Update")" class="btn btn-primary" />
+        </div>
+
+        <div class="form-group" style="margin-top: 20px;">
+            @if (saving)
+            {
+                <span>Saving Details....</span>
+            }
+        </div>
+
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="instructors">Back to List</a>
+</div>
+
+
+@code {
+    private bool saving = false;
+
+    private bool fetching = false;
+
+    int numberOfItems = 10;
+
+    private int currentIndex = 1;
+
+    private bool fetchingCourses = true;
+
+    [Parameter]
+    public string? Id {get; set; }
+
+    public CoursePaginationData? CoursesPagination { get; set; }
+
+    [Inject]
+    public required CoursesRepository CoursesRepo { get; set; }
+
+    [Inject]
+    public required InstructorsRepository InstructorRepo { get; set; }
+
+    [Inject]
+    public required IMapper Mapper { get; set; }
+
+    private Instructor instructor = new();
+
+    public void AssignCourse(string courseId)
+    {
+        var enrolled = instructor.Courses.Any((e) => e.ID.Equals(Guid.Parse(courseId)));
+
+        if (enrolled)
+        {
+            instructor.Courses.RemoveAll((e) => e.ID.Equals(Guid.Parse(courseId)));
+            return;
+        }
+
+        var course = new Course() { ID = Guid.Parse(courseId) };
+        instructor.Courses.Add(course);
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        instructor.OfficeAssignment = new();
+        var filter = new PaginationFilter()
+            {
+                CurrentIndex = currentIndex,
+                PageSize =  numberOfItems
+            };
+        CoursesPagination = (CoursePaginationData) await CoursesRepo.GetPaginatedData(filter);
+        fetchingCourses = false;
+
+        if(Id != null)
+        {
+            fetching = true;
+            var dto = await InstructorRepo.GetInstructor(Id);
+            instructor = Mapper.Map<Instructor>(dto);
+            if(instructor.OfficeAssignment == null)
+            {
+                instructor.OfficeAssignment = new();
+            }
+            fetching = false;
+        }
+    }
+
+    public bool PrevDisabled()
+    {
+        return currentIndex - 1 <= 0;
+    }
+
+    public bool NextDisabled()
+    {
+        double pagesAvailable = (double) CoursesPagination!.Count / numberOfItems;
+        int pages = (int)Math.Ceiling(pagesAvailable);
+        return currentIndex + 1 > pages;
+    }
+
+    public async void FetchCourses()
+    {
+        fetchingCourses = true;
+
+        var filter = new PaginationFilter()
+            {
+                CurrentIndex = currentIndex,
+                PageSize = numberOfItems
+            };
+        CoursesPagination = (CoursePaginationData)
+        await CoursesRepo.GetPaginatedData(filter);
+        fetchingCourses = false;
+        StateHasChanged();
+    }
+
+    public async void HandleValidSubmit()
+    {
+        if(fetching || saving)
+        {
+            return;
+        }
+
+        saving = true;
+
+        if(Id == null)
+        {
+            var registrationData = Mapper.Map<InstructorRegistrationData>(instructor);
+            registrationData.Office = instructor.OfficeAssignment?.Location;
+            await InstructorRepo.CreateInstructor(registrationData);
+        } else
+        {
+            var updateData = Mapper.Map<InstructorUpdateData>(instructor);
+            updateData.Office = instructor.OfficeAssignment?.Location;
+            await InstructorRepo.UpdateInstructor(Id, updateData);
+        }
+
+        await JsRuntime.InvokeVoidAsync("alert", "Saved");
+        saving = false;
+        StateHasChanged();
+    }
+}

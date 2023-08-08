@@ -5,7 +5,7 @@
 <h2>Instructors</h2>
 
 <p>
-    <a href="">Create New</a>
+    <a href="/instructors" >Create New</a>
 </p>
 
 @if (Data != null && !loading)
@@ -55,7 +55,7 @@
                     </td>
                     <td>
                         <button class="btn btn-info" @onclick="(() => SetInstructor(instructor))">Select</button> |
-                        <a href="" class="btn btn-info">Edit</a> |
+                        <a href="/instructors/@instructor.ID" class="btn btn-info">Edit</a> |
                         <a href="" class="btn btn-info">Details</a> |
                         <a href="">Delete</a>
                     </td>
@@ -63,6 +63,25 @@
             }
         </tbody>
     </table>
+
+    <div style="margin-top: 10px; margin-bottom: 10px;">
+        @{
+            var prevDisabled = PrevDisabled() ? "disabled" : "";
+            var nextDisabled = NextDisabled() ? "disabled" : "";
+        }
+        <button type="button"
+                onclick="@(() => { --currentIndex; FetchInstructors();})"
+                class="btn btn-primary @prevDisabled">
+            Previous
+        </button>
+
+        <button type="button"
+                onclick="@(() => {++currentIndex; FetchInstructors();})"
+                class="btn btn-primary @nextDisabled" style="margin-left: 5px;">
+            Next
+        </button>
+
+    </div>
 
     @if (InstructorData != null)
     {
@@ -147,7 +166,7 @@
     private int currentIndex = 1;
 
     [Inject]
-    public InstructorsRepository? InstructorsRepo { get; set; }
+    public required InstructorsRepository InstructorsRepo { get; set; }
 
     public void SetInstructor(InstructorDto dto)
     {
@@ -156,6 +175,32 @@
     }
     
     private InstructorPaginationData? Data { get; set; }
+
+    public bool PrevDisabled()
+    {
+        return currentIndex - 1 <= 0;
+    }
+
+    public bool NextDisabled()
+    {
+        double pagesAvailable = (double)Data!.Count / numberOfItems;
+        int pages = (int)Math.Ceiling(pagesAvailable);
+        return currentIndex + 1 > pages;
+    }
+
+    public async void FetchInstructors()
+    {
+        loading = true;
+        var filter = new PaginationFilter()
+            {
+                CurrentIndex = currentIndex,
+                PageSize = numberOfItems
+            };
+        Data = (InstructorPaginationData)
+        await InstructorsRepo.GetPaginatedData(filter);
+        loading = false;
+        StateHasChanged();
+    }
 
     public InstructorCourseResponseData? GetCourse()
     {
@@ -174,7 +219,7 @@
                 CurrentIndex = currentIndex,
                 PageSize = numberOfItems
             };
-        Data = (InstructorPaginationData)(await InstructorsRepo!.GetPaginatedData(filter));
+        Data = (InstructorPaginationData)(await InstructorsRepo.GetPaginatedData(filter));
     }
 
 }
