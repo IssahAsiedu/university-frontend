@@ -1,11 +1,12 @@
 ﻿@page "/instructors"
 @using UniversityWeb.Repositories;
+@inject IJSRuntime JsRuntime;
 
 
 <h2>Instructors</h2>
 
 <p>
-    <a href="/instructors" >Create New</a>
+    <a href="/instructors/register" >Create New</a>
 </p>
 
 @if (Data != null && !loading)
@@ -55,9 +56,9 @@
                     </td>
                     <td>
                         <button class="btn btn-info" @onclick="(() => SetInstructor(instructor))">Select</button> |
-                        <a href="/instructors/@instructor.ID" class="btn btn-info">Edit</a> |
+                        <a href="/instructors/register/@instructor.ID" class="btn btn-info">Edit</a> |
                         <a href="" class="btn btn-info">Details</a> |
-                        <a href="">Delete</a>
+                        <button class="btn btn-outline-info" onclick="@(() => DeleteInstructor(instructor.ID.ToString()))">Delete</button>
                     </td>
                 </tr>
             }
@@ -220,6 +221,20 @@
                 PageSize = numberOfItems
             };
         Data = (InstructorPaginationData)(await InstructorsRepo.GetPaginatedData(filter));
+    }
+
+    private async Task DeleteInstructor(string id)
+    {
+        try
+        {
+            await InstructorsRepo.DeleteInstructor(id);
+            FetchInstructors();
+            await JsRuntime.InvokeVoidAsync("alert", "Deleted!");
+        }
+        catch (Exception)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "An error occured!");
+        }
     }
 
 }

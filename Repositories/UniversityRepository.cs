@@ -201,4 +201,9 @@ public class InstructorsRepository : IWebRepository
         var jsonContent = new StringContent(content, Encoding.UTF8, "application/json");
         await httpClient.PutAsync($"instructors/{id}", jsonContent);
     }
+
+    public async Task DeleteInstructor(string id)
+    {
+        await httpClient.DeleteAsync($"instructors/{id}");
+    }
 }
