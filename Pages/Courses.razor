@@ -4,6 +4,10 @@
 
 <PageTitle>Courses</PageTitle>
 
+<div class="form-group d-flex" style="margin-top: 24px; margin-bottom: 5px; gap: 5px;">
+    <input @bind="searchString" class="form-control" id="course-title" style="width: 200px;" /> <button @onclick="OnSearch">Search</button>
+</div>
+
 @if (Data == null || loading)
 {
     <p><em>Loading...</em></p>
@@ -78,6 +82,8 @@ else
 
     private bool loading = false;
 
+    private string? searchString = null;
+
     int numberOfItems = 10;
 
     private int currentIndex = 1;
@@ -102,7 +108,8 @@ else
         var filter = new PaginationFilter()
             {
                 CurrentIndex = currentIndex,
-                PageSize = numberOfItems
+                PageSize = numberOfItems,
+                SearchString = string.IsNullOrEmpty(searchString) ? null : searchString
             };
         Data = (CoursePaginationData)
         await CoursesRepo.GetPaginatedData(filter);
@@ -137,6 +144,12 @@ else
         {
             await JsRuntime.InvokeVoidAsync("alert", "An error occured!");
         }
+    }
+
+    private void OnSearch()
+    {
+        currentIndex = 1;
+        FetchCourses();
     }
 
 }

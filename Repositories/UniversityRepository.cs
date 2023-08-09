@@ -34,6 +34,11 @@ public class StudentsRepository: IWebRepository
         if (filter != null)
         {
             url += $"?pageSize={filter.PageSize}&currentIndex={filter.CurrentIndex}";
+
+            if (!string.IsNullOrEmpty(filter.SearchString))
+            {
+                url += $"&searchString={filter.SearchString}";
+            }
         }
         var response = await httpClient.GetAsync(url);
         var content = await response.Content.ReadAsStringAsync();
@@ -105,9 +110,14 @@ public class CoursesRepository : IWebRepository
     {
         var url = "courses";
 
-        if(filter != null)
+        if (filter != null)
         {
             url += $"?pageSize={filter.PageSize}&currentIndex={filter.CurrentIndex}";
+
+            if (!string.IsNullOrEmpty(filter.SearchString))
+            {
+                url += $"&searchString={filter.SearchString}";
+            }
         }
 
         var response = await httpClient.GetAsync(url);
