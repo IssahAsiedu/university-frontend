@@ -201,14 +201,14 @@
       "netstandard.dll": "sha256-5SHKPh1PcuJjq4lIo7ymdIyhb9d3++oMAjr46auhUSc=",
       "System.Private.CoreLib.dll": "sha256-eH+XIsCUG5oZ0k8AIzNtRLTCLiV\/8Zv0RFCPMsIkdYY=",
       "UniversityShared.dll": "sha256-RHAp4iD\/+wEypPP0swtl2ko9khLlIKLUDRP8hM4JHzU=",
-      "UniversityWeb.dll": "sha256-uuiF5idCNY49gjEvF7hPZ9E8CvEXYXdPT65KT9jEuVo="
+      "UniversityWeb.dll": "sha256-FaF1a9ithGiuTmymwlOSpSrojDopytxrkZGQP0e\/Mjc="
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
       "UniversityShared.pdb": "sha256-s2u\/R7CBme9wROxucVOA\/bn0qka7uN93P4Hih3bqu0I=",
-      "UniversityWeb.pdb": "sha256-y3hui4uXwBlSw+rXxtwGWA4FXF6RGl6dvHTPHNRkzy4="
+      "UniversityWeb.pdb": "sha256-u7V4aEgZizK+v0yrz+aJSIV85ocdvhb3oG58YzJAUDo="
     },
     "runtime": {
       "dotnet.7.0.9.gyqq9zlg6p.js": "sha256-dUIY5Mz0ozZWqtTfBb7ArJKbdh5IIp8BXeq6UjK4u\/c=",

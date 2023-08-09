@@ -1,5 +1,50 @@
-﻿<h3>InstructorEdit</h3>
+﻿@page "/instructor/{Id}"
+@using UniversityWeb.Repositories;
 
-@code {
+<h1>Details</h1>
 
+<div>
+    <h4>instructor</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Last Name
+        </dt>
+        <dd class="col-sm-10">
+            @instructor?.LastName
+        </dd>
+        <dt class="col-sm-2">
+           First Name
+        </dt>
+        <dd class="col-sm-10">
+            @instructor?.FirstName
+        </dd>
+        <dt class="col-sm-2">
+            Hire Date
+        </dt>
+        <dd class="col-sm-10">
+            @instructor?.HireDate
+        </dd>
+    </dl>
+</div>
+<div>
+    <a href="instructors/register/@Id">Edit</a> |
+    <a href="instructors">Back to List</a>
+</div>
+
+
+@code 
+{
+    [Parameter]
+    public required string Id { get; set; }
+
+    private InstructorDto? instructor = null;
+
+    [Inject]
+    public required InstructorsRepository InstructorsRepo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        instructor = await InstructorsRepo.GetInstructor(Id);
+    }
 }
